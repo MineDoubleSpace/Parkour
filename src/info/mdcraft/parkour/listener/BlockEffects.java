@@ -97,29 +97,4 @@ public class BlockEffects implements Listener{
 		
 		
 	}
-	
-/*	
-	@SuppressWarnings("deprecation")
-	@EventHandler
-	public void PistonEffects(PlayerMoveEvent e){
-		Player p = e.getPlayer();
-		if (l.getBlock(p) == null){ return; }
-		if (l.getBlock(p).getType() == Material.PISTON_BASE){
-			em.addPotionEffect(p, PotionEffectType.BLINDNESS, 60, 5);
-			Block b = l.getBlock(p);
-			Block i;
-//			Block d = i.setType(Material.PISTON_EXTENSION);
-			PistonBaseMaterial piston = (PistonBaseMaterial) b.getState().getData();
-			piston.setPowered(true);
-			b.setData(piston.getData());
-//			i.setType(Material.PISTON_EXTENSION);
-//			PistonExtensionMaterial pe = (PistonExtensionMaterial) i.getState().getData();
-//			i.setData(pe.getData());
-//			i.getState().update();
-			b.getState().update();
-            return;
-		}
-	
-	*/
-
 }

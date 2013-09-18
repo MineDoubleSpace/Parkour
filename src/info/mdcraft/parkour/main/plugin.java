@@ -36,6 +36,7 @@ public class plugin extends JavaPlugin{
 		@SuppressWarnings("unused")
 		TokenMenu menu;
 		menu = new TokenMenu(this);
+		new DoubleTapListener(this).startHungerRegen(this);
 		
 		
 		

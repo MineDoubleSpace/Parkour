@@ -7,15 +7,15 @@ import info.mdcraft.parkour.manager.LocationManager;
 import info.mdcraft.parkour.manager.SettingsManager;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Vector;
 
 public class DoubleTapListener implements Listener{
 	
@@ -25,6 +25,7 @@ public class DoubleTapListener implements Listener{
 	public Plugin plugin;
 	
 	ArrayList <Player> p = new ArrayList<Player>();
+	static ArrayList<Player> fly = new ArrayList<Player>();
 	
 	public DoubleTapListener(Plugin i) {
 		plugin = i;
@@ -33,16 +34,13 @@ public class DoubleTapListener implements Listener{
 	@EventHandler
 	public void onPlayerDoubleTap (PlayerToggleFlightEvent event){
 		Player pl = event.getPlayer();
-		if (pl.getLocation().subtract(0,2,0).getBlock().getType() == Material.AIR){ 
-			event.setCancelled(true);
+		if (fly.contains(pl)){
 			return;
 		}
 		if(getHunger(pl) < 20) {
 			event.setCancelled(true);
-			pl.playSound(pl.getLocation(), Sound.SLIME_WALK, 10 ,10);
-			pl.setVelocity(pl.getLocation().getDirection());
-			Vector v = new Vector(pl.getVelocity().getX(), -20.0,  pl.getVelocity().getZ());
-			pl.setVelocity(v);
+			pl.playSound(pl.getLocation(), Sound.ANVIL_LAND, 5 ,5);
+			pl.teleport(pl.getLocation());
 			return;
 		}
 		em.launchPlayer(1, pl);
@@ -62,23 +60,43 @@ public class DoubleTapListener implements Listener{
 
 	}
 	
-	
 	@EventHandler
-	public void onplayerjoinhunger(PlayerJoinEvent e){
-		final Player pl = e.getPlayer();
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				int h = getHunger(pl);
-				if (h > 20){
-					pl.setFoodLevel(20);
-				}else {
-				int t = h + 2;
-				pl.setFoodLevel(t);
+	public void onPlayerFlyCommand(PlayerCommandPreprocessEvent e){
+		Player p = e.getPlayer();
+		String cmd1 = e.getMessage();
+		String[] cmd = cmd1.split(" ");
+		if (cmd[0].equalsIgnoreCase("/fly")){
+			if (p.isOp()){
+				if (fly.contains(p)){
+					fly.remove(p);
+					p.sendMessage(ChatColor.GREEN +  "Fly mode Disabled!");
+					return;
 				}
+				fly.add(p);
+				p.sendMessage(ChatColor.GREEN + "Fly mode Enabled!");
+				return;
 			}
-		}, 5, 5);
+			return;
+		}
+	}
+	
+	
+	public void startHungerRegen(Plugin plugin){
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					for (Player pl : Bukkit.getOnlinePlayers()){
+					int h = getHunger(pl);
+					if (h > 20){
+						pl.setFoodLevel(20);
+					}else {
+					int t = h + 2;
+					pl.setFoodLevel(t);
+					}
+					}
+				}
+			}, 5, 5);
 	}
 	
 	
