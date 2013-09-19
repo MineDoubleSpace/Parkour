@@ -32,7 +32,7 @@ public class DoubleTapListener implements Listener{
 	}
 
 	@EventHandler
-	public void onPlayerDoubleTap (PlayerToggleFlightEvent event){
+	public void onPlayerDoubleTap(PlayerToggleFlightEvent event){
 		Player pl = event.getPlayer();
 		if (fly.contains(pl)){
 			return;
@@ -40,14 +40,12 @@ public class DoubleTapListener implements Listener{
 		if(getHunger(pl) < 20) {
 			event.setCancelled(true);
 			pl.playSound(pl.getLocation(), Sound.ANVIL_LAND, 5 ,5);
-			pl.teleport(pl.getLocation());
 			return;
 		}
 		em.launchPlayer(1, pl);
 		pl.setFoodLevel(getHunger(pl) - 20);
 		pl.playSound(pl.getLocation(), Sound.ENDERDRAGON_WINGS, 10 ,10);
 		pl.setAllowFlight(false);
-		pl.setAllowFlight(true);
 		pl.setFlying(false);
 		event.setCancelled(true);
 		return;
@@ -63,8 +61,7 @@ public class DoubleTapListener implements Listener{
 	@EventHandler
 	public void onPlayerFlyCommand(PlayerCommandPreprocessEvent e){
 		Player p = e.getPlayer();
-		String cmd1 = e.getMessage();
-		String[] cmd = cmd1.split(" ");
+		String[] cmd = e.getMessage().split(" ");
 		if (cmd[0].equalsIgnoreCase("/fly")){
 			if (p.isOp()){
 				if (fly.contains(p)){
@@ -88,10 +85,11 @@ public class DoubleTapListener implements Listener{
 				public void run() {
 					for (Player pl : Bukkit.getOnlinePlayers()){
 					int h = getHunger(pl);
-					if (h > 20){
+					if (h >= 19){
 						pl.setFoodLevel(20);
+						pl.setAllowFlight(true);
 					}else {
-					int t = h + 2;
+					int t = h + 4;
 					pl.setFoodLevel(t);
 					}
 					}
@@ -112,8 +110,12 @@ public class DoubleTapListener implements Listener{
 		}else if (h > 20){
 			pl.setFoodLevel(20);
 			return 20;
-		}else { return h; }
+		}else { 
+			return h;
+		}
 	}
+	
+	
 	
 	public void removeHunger(Player pl){
 		int c = getHunger(pl);
