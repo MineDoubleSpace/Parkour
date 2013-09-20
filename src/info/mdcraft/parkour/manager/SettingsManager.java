@@ -29,11 +29,15 @@ public class SettingsManager {
 	
 
 	public void setup(Plugin p) {
-		cfile = new File(p.getDataFolder(), "config.yml");
-		config = p.getConfig();
 		if (!p.getDataFolder().exists()) {
 			p.getDataFolder().mkdir();
 		}
+		cfile = new File(p.getDataFolder(), "config.yml");
+		if (!cfile.exists()){
+			p.saveDefaultConfig();
+		}
+		
+		config = p.getConfig();
 	}
 	
 	

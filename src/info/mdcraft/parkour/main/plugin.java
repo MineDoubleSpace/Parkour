@@ -20,13 +20,16 @@ public class plugin extends JavaPlugin{
 	
 	@Override
 	public void onEnable() {
-		System.out.println(ChatColor.GREEN + "Loading files");
+		System.out.println("[Parkour]"+ChatColor.GREEN + "Loading files...");
 		s.setup(this);
 		s.DataSetup(this);
-		System.out.println(ChatColor.GREEN + "Config created and loaded..");
-		/*this.getServer().getWorld(s.getConfig().getString("world")).setPVP(false);
+		try{
+		this.getServer().getWorld(s.getConfig().getString("world")).setPVP(false);
 		this.getServer().getWorld(s.getConfig().getString("world")).setAnimalSpawnLimit(0);;
-		this.getServer().getWorld(s.getConfig().getString("world")).setMonsterSpawnLimit(0);*/
+		this.getServer().getWorld(s.getConfig().getString("world")).setMonsterSpawnLimit(0);
+		} catch (Exception e){
+			System.out.println("[Parkour]World not found!");
+		}
 		this.getServer().getPluginManager().registerEvents(new CheckpointListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new BlockEffects(this), this);
 		this.getServer().getPluginManager().registerEvents(new SimpleListener(this), this);
@@ -44,6 +47,7 @@ public class plugin extends JavaPlugin{
 		this.getCommand("checkpoint").setExecutor(new SimpleCommand(this));
 		this.getCommand("cp").setExecutor(new SimpleCommand(this));
 		this.getCommand("token").setExecutor(new TokenCommand(this));
+		System.out.println("[Parkour]"+ChatColor.GREEN + "Config created and loaded...");
 	}
 	
 	

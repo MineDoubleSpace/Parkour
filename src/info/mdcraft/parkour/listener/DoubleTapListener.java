@@ -8,7 +8,9 @@ import info.mdcraft.parkour.manager.SettingsManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,14 +43,19 @@ public class DoubleTapListener implements Listener{
 			event.setCancelled(true);
 			pl.playSound(pl.getLocation(), Sound.ANVIL_LAND, 5 ,5);
 			return;
+		}else {
+			
+			if (isSolid(pl)){
+				em.launchPlayer(1, pl);
+				pl.setAllowFlight(false);
+				pl.setFoodLevel(getHunger(pl) - 20);
+				pl.playSound(pl.getLocation(), Sound.ENDERDRAGON_WINGS, 10 ,10);
+				event.setCancelled(true);
+				return;
+			}
+			event.setCancelled(true);
+			return;
 		}
-		em.launchPlayer(1, pl);
-		pl.setFoodLevel(getHunger(pl) - 20);
-		pl.playSound(pl.getLocation(), Sound.ENDERDRAGON_WINGS, 10 ,10);
-		pl.setAllowFlight(false);
-		pl.setFlying(false);
-		event.setCancelled(true);
-		return;
 	}
 	
 	@EventHandler
@@ -89,12 +96,12 @@ public class DoubleTapListener implements Listener{
 						pl.setFoodLevel(20);
 						pl.setAllowFlight(true);
 					}else {
-					int t = h + 4;
+					int t = h + 1;
 					pl.setFoodLevel(t);
 					}
 					}
 				}
-			}, 5, 5);
+			}, 1, 1);
 	}
 	
 	
@@ -120,6 +127,15 @@ public class DoubleTapListener implements Listener{
 	public void removeHunger(Player pl){
 		int c = getHunger(pl);
 		pl.setFoodLevel(c - 6);
+	}
+	
+	public boolean isSolid(Player pl){
+		Block b = pl.getLocation().subtract(0,2,0).getBlock();
+		if (b.getType() != Material.AIR){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }
 
